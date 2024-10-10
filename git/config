@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://github.com/donut_but_a_brain/discord-bot-law-archive.git
+	fetch = +refs/heads/*:refs/remotes/origin/*

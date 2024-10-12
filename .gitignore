@@ -1,7 +1,0 @@
-# Exclude the token file
-*.env
-
-# Python bytecode
-__pycache__/
-*.py[cod]
-

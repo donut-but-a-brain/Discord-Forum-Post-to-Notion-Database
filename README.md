@@ -1,9 +1,10 @@
 # DISCORD FORUM TO NOTION DATABASE BOT
-> [!CAUTION]
+> [!WARNING]
 > I am in no way liable for any effects this program may have. That being said, if you don't do anything stupid, it probably won't brick it. Either way, please do run it in a venv
 
-> [!INFO]
+> [!IMPORTANT]
 > This bot only works on a guild install afaik. Please make sure it has the necessary permissions
+
 ## About
 This discord bot, custom-made for Voices of Democracy, uploads forum posts to a Notion database. 
 ## Installation

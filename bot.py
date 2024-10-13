@@ -14,22 +14,22 @@ intents = discord.Intents.default()
 intents.messages = True  # Enable message content intent
 intents.message_content = True  # Enable message content too
 
-# Create the bot instance with intents
+# DO NOT USE THE COMMAND PREFIX. IT IS AN ARTIFACT I HAVEN'T REMOVED. USE SLASH COMMANDS INSTEAD
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 NOTION_API_KEY = os.getenv('NOTION_TOKEN')
 NOTION_DATABASE_ID = os.getenv('NOTION_DATABASE_ID')
-DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))  # If you are modifying this for use with your own channel make sure it is a forum channel + an integer code
+DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))  # Make sure the channel ID is an integer
 
 # Set up Notion client
 notion = Client(auth=NOTION_API_KEY)
 
-# change logging.ERROR to logging.DEBUG if you wish to turn logging to debug mode
+# Set up logging
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 logger.debug("Logging in DEBUG mode")
-logger.error("Logging in ERROR mode if you see only this message")
+logger.error("Logging in ERROR mode")
 
 # Helper function to fetch existing laws from Notion
 def fetch_existing_laws():
@@ -104,12 +104,14 @@ async def save_to_notion(thread_name, thread_content):
 
 @bot.event
 async def on_ready():
+    # Sync the slash commands
+    await bot.tree.sync()
     print(f'Logged in as {bot.user}')
 
-@bot.command()
-async def archive_laws(ctx):
+@bot.tree.command(name="archive_laws", description="It's just a LITTLE BIT self-explanatory, no?")
+async def archive_laws(interaction: discord.Interaction):
     logger.debug("archive_laws command invoked.")
-    await ctx.send("Archiving your law right now. If you aren't @alecstatic and it doesn't show up in the Notion database, contact @alecstatic please. Thank you!")
+    await interaction.response.send_message("Archiving your law right now. If you aren't @alecstatic and it doesn't show up in the Notion database, contact @alecstatic please. Thank you!")
 
     # Get the channel where the command was invoked
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
@@ -119,20 +121,20 @@ async def archive_laws(ctx):
     # Check if the channel is a valid channel and a forum channel
     if channel is None or not isinstance(channel, discord.ForumChannel):
         logger.error("The specified channel is not a valid forum channel.")
-        await ctx.send("The specified channel is not a valid forum channel.")
+        await interaction.followup.send("The specified channel is not a valid forum channel.")
         return
 
     # Check for permissions
-    if not ctx.guild.me.guild_permissions.read_message_history:
+    if not interaction.guild.me.guild_permissions.read_message_history:
         logger.error("Bot lacks permission to read message history.")
-        await ctx.send("I don't have permission to read message history in this channel.")
+        await interaction.followup.send("I don't have permission to read message history in this channel.")
         return
 
     logger.debug("Permissions are valid. Attempting to fetch all threads.")
 
     try:
         # Iterate over all threads (both active and archived)
-        for thread in channel.threads:  
+        for thread in channel.threads:  # This is a list, so iterate over it directly
             logger.debug(f"Found thread: {thread.name}")
 
             # Collect the content of the messages
@@ -152,17 +154,17 @@ async def archive_laws(ctx):
 
     except discord.Forbidden:
         logger.error("I don't have permission to access this channel.")
-        await ctx.send("I don't have permission to access this channel.")
+        await interaction.followup.send("I don't have permission to access this channel.")
     except discord.HTTPException as e:
         logger.error(f"Error fetching threads: {e}")
-        await ctx.send(f"Error fetching threads: {e}")
+        await interaction.followup.send(f"Error fetching threads: {e}")
     except Exception as e:
         logger.exception("An unexpected error occurred.")
-        await ctx.send(f"An unexpected error occurred: {e}")
+        await interaction.followup.send(f"An unexpected error occurred: {e}")
 
-@bot.command(name="ping")  # ping command
-async def ping(ctx):
-    await ctx.send("Pong! upt2")
+@bot.tree.command(name="ping", description="I am become racquet, destroyer of tables.")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message("Pong!")
     logger.info("Ping command executed.")
 
 # Run the bot

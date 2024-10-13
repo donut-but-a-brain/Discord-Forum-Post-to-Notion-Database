@@ -1,4 +1,6 @@
 import discord
+from discord import app_commands
+from discord.ext import commands
 from discord.ext import commands
 from notion_client import Client
 from dotenv import load_dotenv
@@ -105,11 +107,12 @@ async def save_to_notion(thread_name, thread_content):
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
+    await bot.tree.sync()
 
-@bot.command()
-async def archive_laws(ctx):
+@bot.tree.command(name="archive")
+async def archive_laws(interaction):
     logger.debug("archive_laws command invoked.")
-    await ctx.send("Archiving your law right now. If you aren't @alecstatic and it doesn't show up in the Notion database, contact @alecstatic please. Thank you!")
+    await interaction.response.send_message("Archiving your law right now. If you aren't @alecstatic and it doesn't show up in the Notion database, contact @alecstatic please. Thank you!")
 
     # Get the channel where the command was invoked
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
@@ -119,13 +122,13 @@ async def archive_laws(ctx):
     # Check if the channel is a valid channel and a forum channel
     if channel is None or not isinstance(channel, discord.ForumChannel):
         logger.error("The specified channel is not a valid forum channel.")
-        await ctx.send("The specified channel is not a valid forum channel.")
+        await interaction.response.send_message("The specified channel is not a valid forum channel.")
         return
 
     # Check for permissions
-    if not ctx.guild.me.guild_permissions.read_message_history:
+    if not interaction.guild.me.guild_permissions.read_message_history:
         logger.error("Bot lacks permission to read message history.")
-        await ctx.send("I don't have permission to read message history in this channel.")
+        await interaction.response.send_message("I don't have permission to read message history in this channel.")
         return
 
     logger.debug("Permissions are valid. Attempting to fetch all threads.")
@@ -152,17 +155,17 @@ async def archive_laws(ctx):
 
     except discord.Forbidden:
         logger.error("I don't have permission to access this channel.")
-        await ctx.send("I don't have permission to access this channel.")
+        await interaction.response.send_message("I don't have permission to access this channel.")
     except discord.HTTPException as e:
         logger.error(f"Error fetching threads: {e}")
-        await ctx.send(f"Error fetching threads: {e}")
+        await interaction.response.send_message(f"Error fetching threads: {e}")
     except Exception as e:
         logger.exception("An unexpected error occurred.")
-        await ctx.send(f"An unexpected error occurred: {e}")
+        await interaction.response.send_message(f"An unexpected error occurred: {e}")
 
-@bot.command(name="ping")  # ping command
-async def ping(ctx):
-    await ctx.send("Pong! upt2")
+@bot.tree.command(name="ping")  # ping command
+async def ping(interaction):
+    await interaction.response.send_message("Pong! upt2")
     logger.info("Ping command executed.")
 
 # Run the bot

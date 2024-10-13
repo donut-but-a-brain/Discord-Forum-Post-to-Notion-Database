@@ -107,7 +107,7 @@ async def save_to_notion(thread_name, thread_content):
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
-    await bot.tree.sync()
+    await bot.tree.sync() #not suitable for large amount of servers but fine for small amount
 
 @bot.tree.command(name="archive")
 async def archive_laws(interaction):

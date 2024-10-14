@@ -1,6 +1,6 @@
 # DISCORD FORUM TO NOTION DATABASE BOT
 > [!WARNING]
-> I am in no way liable for any effects this program may have. That being said, if you don't do anything stupid, it probably won't brick it. Either way, please do run it in a venv
+> I am in no way liable for any effects this program may have (parts 15, 16, 17 of the license). That being said, if you don't do anything stupid, it probably won't brick it. Either way, please do run it in a venv
 
 > [!IMPORTANT]
 > This bot only works on a guild install afaik. Please make sure it has the necessary permissions

@@ -6,7 +6,7 @@
 > This bot only works on a guild install afaik. Please make sure it has the necessary permissions
 
 ## About
-This discord bot, custom-made for Voices of Democracy, uploads forum posts to a Notion database. 
+This discord bot uploads forum posts to a Notion database. 
 ## Installation
 - I would recommend using a virtual environment for this, so set that up
 - Install the stuff in requirements.txt to your virtual environment
